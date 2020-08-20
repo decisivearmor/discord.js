@@ -42,12 +42,12 @@ class VoiceReceiver extends EventEmitter {
    * @param {ReceiveStreamOptions} options Options.
    * @returns {ReadableStream}
    */
-  createStream(user, { mode = 'opus', end = 'silence' } = {}) {
+  createStream(user, { mode = 'opus', end = 'silence', channels = 2 } = {}) {
     user = this.connection.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
     const stream = this.packets.makeStream(user.id, end);
     if (mode === 'pcm') {
-      const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
+      const decoder = new prism.opus.Decoder({ channels, rate: 48000, frameSize: 960 });
       stream.pipe(decoder);
       return decoder;
     }
